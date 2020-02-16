@@ -5,15 +5,11 @@ int main() {
     return 0;
 }
 
-typedef char* string;
-
-class participant{
-    const string country;
-    string song;
-    string performer;
-    int song_length;
-    bool is_registered;
-public:
-    void update()
-};
+Participant::Participant(string state, string song, int timeLength, string singer): state(state), song(song),
+                                                        timeLength(timeLength), singer(singer), is_registered(false){
+}
+Participant::~Participant(){
+    //the d'ors of string class are called.
+}
+Participant::
 
