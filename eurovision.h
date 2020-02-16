@@ -16,15 +16,27 @@ enum Phase { Registration, Contest, Voting };
 class Participant
 {
 // relevant private members can be defined here, if necessary.
+    bool is_registered;
 
 public :
-    char* state;
-    char* song;
+    string state;
+    string song;
     int timeLength;
-    char* singer;
+    string singer;
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
+    Participant(string state, string song, int timeLength, string singer);
+    Participant(const Participant& p) = delete;
+    ~Participant();
+    string state();
+    string song();
+    int timeLength();
+    string singer();
+    bool is_registered();
+    operator =(const Participant& p) = delete;
+
+    friend std::ostream& operator <<(std::ostream os, Participant& p);
 
 // NO friend is allowed here.
 
