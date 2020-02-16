@@ -5,13 +5,14 @@ using std::exception;
 #define NO_PRICE -1
 
 // ---------------------------------------------
-class NoPrice
+class NoPrice: public exception
 {
 };
 
 // ---------------------------------------------
 class Seat
 {
+protected:
     const int line_number
     int chair_number;
     int base_price;
@@ -23,9 +24,8 @@ public:
 };
 
 // ---------------------------------------------
-class GreenRoomSeat
+class GreenRoomSeat: public Seat
 {
-    static const int
 public:
     GreenRoomSeat(int line, int chair):
         Seat(line, chair, NO_PRICE){}
@@ -33,29 +33,62 @@ public:
         throw NoPrice();
     }
     string location() const override {
-        return "Green Room-> line: " + std::to_string(line_number) + ", chair: " +
-           std::to_string(chair_number);
+        return "Green Room-> line: " + std::to_string(line_number)
+            + ", chair: " + std::to_string(chair_number);
     }
 };
 
 // ---------------------------------------------
-class MainHallSeat
+class MainHallSeat: public Seat
 {
+protected:
+    static const int addition_main_hall;
+public:
+    MainHallSeat(int line, int chair, int base):
+        Seat(line, chair, base){}
 };
 
 // ---------------------------------------------
-class SpecialSeat
+class SpecialSeat: public MainHallSeat
 {
+protected:
+    static const int addition_special_seat;
+public:
+    SpecialSeat(int line, int chair, int base):
+        MainHallSeat(line, chair, base){}
 };
 
 // ---------------------------------------------
-class GoldenCircleSeat
+class GoldenCircleSeat: public SpecialSeat
 {
+    static const int addition_golden_circle_seat;
+public:
+    GoldenCircleSeat(int line, int chair, int base):
+        MainHallSeat(line, chair, base){}
+    int price() const override{
+        return base + addition_main_hall
+            + addition_special_seat + addition_golden_circle_seat;
+    }
+    string location() const override{
+        return "Golden Circle-> line: " + std::to_string(line_number)
+               + ", chair: " + std::to_string(chair_number);
+    }
 };
 
 // ---------------------------------------------
 class DisablePodiumSeat
 {
+    static const int disable_podium_price;
+public:
+    GoldenCircleSeat(int line, int chair, int base):
+            MainHallSeat(line, chair, base){}
+    int price() const override{
+        return disable_podium_price;
+    }
+    string location() const override{
+        return "Disable Podium-> line: " + std::to_string(line_number)
+               + ", chair: " + std::to_string(chair_number);
+    }
 };
 
 // ---------------------------------------------
