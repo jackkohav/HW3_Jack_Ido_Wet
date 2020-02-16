@@ -24,6 +24,7 @@ protected:
 public:
     Seat(const int& line, const int& chair, const int& base_price):
         line(line), chair(chair), base_price(base_price){}
+    virtual ~Seat() = default;
     virtual int price() const = 0;
     virtual string location() const = 0;
 };

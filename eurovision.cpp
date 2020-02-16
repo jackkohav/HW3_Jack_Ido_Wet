@@ -28,3 +28,8 @@ std::ostream& operator<<(std::ostream& os, Participant& p){
     os << "[" << p.state() << "/" << p.song() << "/" << p.timeLength() << "/" << p.singer() << "]";
     return os;
 }
+
+template<typename Iterator>
+Iterator get(Iterator begin, Iterator end, int i){
+    
+}
