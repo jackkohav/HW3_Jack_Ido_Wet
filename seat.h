@@ -2,13 +2,16 @@
 #include <string>
 using std::string;
 using std::exception;
-#define NO_PRICE -1
+
+#define NO_PRICE (-1)
 
 // ---------------------------------------------
 class NoPrice: public exception
 {
 public:
-    char const *what() const noexcept override;
+    char const *what() const noexcept override{
+        return "Not For Sale !";
+    }
 };
 
 // ---------------------------------------------
@@ -63,6 +66,7 @@ public:
 // ---------------------------------------------
 class GoldenCircleSeat: public SpecialSeat
 {
+protected:
     static int addition_golden_circle_seat;
 public:
     GoldenCircleSeat(const int& line, const int& chair, const int& base_price):
@@ -94,13 +98,13 @@ public:
 };
 
 // ---------------------------------------------
-class RegularSeat: public Seat
+class RegularSeat: public MainHallSeat
 {
 protected:
     const char area;
 public:
     RegularSeat(const char& area, const int& line, const int& chair, const int& base_price):
-        Seat(line, chair, base_price), area(area){}
+        MainHallSeat(line, chair, base_price), area(area){}
 };
 
 // ---------------------------------------------
@@ -111,7 +115,7 @@ public:
     FrontRegularSeat(const char& area, const int& line, const int& chair, const int& base):
         RegularSeat(area, line, chair, base){}
     int price() const override{
-        return base_price + addition_front;
+        return base_price + addition_main_hall + addition_front;
     }
     string location() const override {
         return string("Front-> area: ") + area + string(", line: ") + std::to_string(line)

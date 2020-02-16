@@ -1,15 +1,18 @@
 #include <iostream>
 
 
-Participant::Participant(string state, string song, int timeLength, string singer): state(state), song(song),
-                                                        timeLength(timeLength), singer(singer), is_registered(false){
-}
+Participant::Participant(const string& state, const string& song,
+        const int& timeLength, const string& singer): state(state), song(song),
+        timeLength(timeLength), singer(singer), is_registered(false){}
+
 string Participant::state(){
     return state;
 }
+
 string Participant::song(){
     return song;
 }
+
 int Participant::timeLength() {
     return timeLength;
 }

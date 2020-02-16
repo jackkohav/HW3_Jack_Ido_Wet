@@ -5,10 +5,6 @@ using std::exception;
 
 #include "seat.h"
 
-char const* NoPrice::what() const noexcept {
-    return "Not For Sale !";
-}
-
 int MainHallSeat::addition_main_hall = 100;
 
 int SpecialSeat::addition_special_seat = 300;
