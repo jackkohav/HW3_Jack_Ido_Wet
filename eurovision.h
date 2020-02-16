@@ -28,8 +28,14 @@ public :
 // NO OTHER METHODS SHOULD APPEAR HERE.
     Participant(string state, string song, int timeLength, string singer);
     Participant(const Participant& p) = delete;
-    operator =(const Participant& p) = delete;
     ~Participant();
+    string state();
+    string song();
+    int timeLength();
+    string singer();
+    bool is_registered();
+    operator =(const Participant& p) = delete;
+
     friend std::ostream& operator <<(std::ostream os, Participant& p);
 
 // NO friend is allowed here.
