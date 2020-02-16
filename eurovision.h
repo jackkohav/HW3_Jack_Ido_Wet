@@ -12,15 +12,15 @@ enum VoterType { All, Regular, Judge };
 enum Phase { Registration, Contest, Voting };
 
 //---------------------------------------------------
-
+typedef char* string;
 class Participant
 {
 // relevant private members can be defined here, if necessary.
-    bool is_registered;
-    string state;
-    string song;
-    int timeLength;
-    string singer;
+    bool Is_Registered;
+    string State;
+    string Song;
+    int Time_Length;
+    string Singer;
 public :
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
@@ -32,15 +32,12 @@ public :
     string song();
     int timeLength();
     string singer();
-    bool is_registered();
-    operator =(const Participant& p) = delete;
-
-    friend std::ostream& operator <<(std::ostream os, Participant& p);
-
+    bool isRegistered();
+    Participant& operator=(const Participant& p) = delete;
 // NO friend is allowed here.
 
 };
-
+std::ostream& operator <<(std::ostream os, Participant& p);
 //---------------------------------------------------
 
 
@@ -75,7 +72,7 @@ struct Vote
 
 class MainControl
 {
-/ relevant private members can be defined here, if necessary.
+// relevant private members can be defined here, if necessary.
 
 public :
 

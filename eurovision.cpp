@@ -1,31 +1,30 @@
 #include <iostream>
+#include <string>
+#include "eurovision.h"
 
 
-Participant::Participant(const string& state, const string& song,
-        const int& timeLength, const string& singer): state(state), song(song),
-        timeLength(timeLength), singer(singer), is_registered(false){}
+Participant::Participant(string state, string song, int timeLength,
+                         string singer): State(state), Song(song),
+        Time_Length(timeLength), Singer(singer), Is_Registered(false){}
 
 string Participant::state(){
-    return state;
+    return State;
 }
 
 string Participant::song(){
-    return song;
+    return Song;
 }
 
 int Participant::timeLength() {
-    return timeLength;
+    return Time_Length;
 }
 string Participant::singer(){
-    return singer;
+    return Singer;
 }
-bool Participant::is_registered(){
-    return is_registered;
+bool Participant::isRegistered(){
+    return Is_Registered;
 }
-std::ostream& Participant::operator<<(std::ostream& os, Participant& p){
-    os << "[" << p.state << "/" << p.song << "/" << p.timeLength << "/" << p.singer << "]";
+std::ostream& operator<<(std::ostream& os, Participant& p){
+    os << "[" << p.state() << "/" << p.song() << "/" << p.timeLength() << "/" << p.singer() << "]";
     return os;
-}
-Participant::~Participant(){
-    //the d'ors of string class are called.
 }

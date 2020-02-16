@@ -34,9 +34,11 @@ class GreenRoomSeat: public Seat
 public:
     GreenRoomSeat(const int& line, const int& chair):
         Seat(line, chair, NO_PRICE){}
+
     int price() const override {
         throw NoPrice();
     }
+
     string location() const override {
         return string("Green Room-> line: ") + std::to_string(line)
             + string(", chair: ") + std::to_string(chair);
