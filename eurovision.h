@@ -24,10 +24,13 @@ public :
     int timeLength;
     string singer;
 // need to define here possibly c'tr and d'tr and ONLY methods that
-    Participant(string state, string song, int timeLength, string singer);
-    ~Participant();
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
+    Participant(string state, string song, int timeLength, string singer);
+    Participant(const Participant& p) = delete;
+    operator =(const Participant& p) = delete;
+    ~Participant();
+    friend std::ostream& operator <<(std::ostream os, Participant& p);
 
 // NO friend is allowed here.
 

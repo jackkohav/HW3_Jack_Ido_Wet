@@ -11,5 +11,9 @@ Participant::Participant(string state, string song, int timeLength, string singe
 Participant::~Participant(){
     //the d'ors of string class are called.
 }
-Participant::
+std::ostream& Participant::operator<<(std::ostream& os, Participant& p){
+    os << "[" << p.state << "/" << p.song << "/" << p.timeLength << "/" << p.singer << "]";
+    return os;
+}
+
 
