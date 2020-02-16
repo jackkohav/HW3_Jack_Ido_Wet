@@ -3,4 +3,4 @@ project(HW3_Jack_Ido_Wet)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(HW3_Jack_Ido_Wet main.cpp)
+add_executable(HW3_Jack_Ido_Wet seat.h seat.cpp test_part_c.cpp)
