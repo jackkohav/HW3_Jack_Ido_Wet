@@ -33,6 +33,7 @@ public :
     int timeLength();
     string singer();
     bool isRegistered();
+    void update(string new_song, int new_time_length, string new_singer);
     Participant& operator=(const Participant& p) = delete;
 // NO friend is allowed here.
 
