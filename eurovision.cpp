@@ -34,6 +34,9 @@ void Participant::update(string new_song, int new_time_length, string new_singer
     if(new_singer != "")
         Singer = new_singer;
 }
+void Participant::updateRegistered(bool is_registered){
+    Is_Registered = is_registered;
+}
 std::ostream& operator<<(std::ostream& os, Participant& p){
     os << "[" << p.state() << "/" << p.song() << "/" << p.timeLength() << "/" << p.singer() << "]";
     return os;

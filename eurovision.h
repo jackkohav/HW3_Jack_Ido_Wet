@@ -34,11 +34,12 @@ public :
     string singer();
     bool isRegistered();
     void update(string new_song, int new_time_length, string new_singer);
+    void updateRegistered(bool is_registered);
     Participant& operator=(const Participant& p) = delete;
 // NO friend is allowed here.
 
 };
-std::ostream& operator <<(std::ostream os, Participant& p);
+std::ostream& operator <<(std::ostream& os, Participant& p);
 //---------------------------------------------------
 
 
