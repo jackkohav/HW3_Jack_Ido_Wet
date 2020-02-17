@@ -28,11 +28,11 @@ public :
     Participant(string state, string song, int timeLength, string singer);
     Participant(const Participant& p) = delete;
     ~Participant();
-    string state();
-    string song();
-    int timeLength();
-    string singer();
-    bool isRegistered();
+    string state() const;
+    string song() const;
+    int timeLength() const;
+    string singer() const;
+    bool isRegistered() const;
     void update(string new_song, int new_time_length, string new_singer);
     void updateRegistered(bool is_registered);
     Participant& operator=(const Participant& p) = delete;
@@ -46,8 +46,12 @@ std::ostream& operator <<(std::ostream& os, Participant& p);
 class Voter
 {
 // relevant private members can be defined here, if necessary.
+string state;
+VoterType type;
 
 public :
+    Voter(string stste, VoterType = Regular);
+    ~Voter();
 
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.

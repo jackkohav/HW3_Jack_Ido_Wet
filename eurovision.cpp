@@ -27,6 +27,11 @@ bool Participant::isRegistered(){
     return Is_Registered;
 }
 
+
+Voter::Voter(string state, VoterType type): state(state), type(type) {
+}
+
+
 void Participant::update(string new_song, int new_time_length, string new_singer) {
     if(Is_Registered)
         return;
