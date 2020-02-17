@@ -27,11 +27,6 @@ bool Participant::isRegistered() const{
     return _is_registered;
 }
 
-
-Voter::Voter(const string& state, const VoterType& type): _state(state), _type(type) {
-}
-
-
 void Participant::update(const string& new_song, const int& new_time_length, const string& new_singer) {
     if(_is_registered)
         return;
@@ -58,9 +53,48 @@ string Voter::state() const{
     return _state;
 }
 
+int Voter::timesOfVotes() const {
+    return _number_of_votes;
+}
+
 VoterType Voter::voterType() const {
     return _type;
 }
+
+Voter::Voter(const string& state, const VoterType& type): _state(state), _type(type), _number_of_votes(0) {
+}
+
+Voter& Voter::operator++() {
+    ++_number_of_votes;
+    return *this;
+}
+
+
+
+
+Vote::Vote(const Voter& voter, const string& vote):
+        voter(voter.state(), voter.voterType()), twelve_pts(""), ten_pts(""),
+        eight_pts(""), seven_pts(""), six_pts(""), five_pts(""),
+        four_pts(""), three_pts(""), two_pts(""), one_pts(""){
+    if(voter.voterType() == Regular){
+        one_pts = string(vote);
+    }
+    else{
+        twelve_pts = string(vote);
+    }
+}
+
+Vote::Vote(const Voter &voter, const string &vote1, const string &vote2,
+           const string &vote3, const string &vote4, const string &vote5,
+           const string &vote6, const string &vote7, const string &vote8,
+           const string &vote9, const string &vote10):
+           voter(voter.state(), voter.voterType()),  twelve_pts(vote1),
+           ten_pts(vote2), eight_pts(vote3), seven_pts(vote4), six_pts(vote5),
+           five_pts(vote6), four_pts(vote7), three_pts(vote8), two_pts(vote9),
+           one_pts(vote10){}
+
+
+
 
 template<typename Iterator>
 Iterator get(Iterator begin, Iterator end, int i){
@@ -86,24 +120,3 @@ Iterator get(Iterator begin, Iterator end, int i){
     }
     return jth_max;
 }
-
-Vote::Vote(const Voter& voter, const string& vote):
-        voter(voter.state(), voter.voterType()), twelve_pts(""), ten_pts(""),
-        eight_pts(""), seven_pts(""), six_pts(""), five_pts(""),
-        four_pts(""), three_pts(""), two_pts(""), one_pts(""){
-    if(voter.voterType() == Regular){
-        one_pts = string(vote);
-    }
-    else{
-        twelve_pts = string(vote);
-    }
-}
-
-Vote::Vote(const Voter &voter, const string &vote1, const string &vote2,
-           const string &vote3, const string &vote4, const string &vote5,
-           const string &vote6, const string &vote7, const string &vote8,
-           const string &vote9, const string &vote10):
-           voter(voter.state(), voter.voterType()),  twelve_pts(vote1),
-           ten_pts(vote2), eight_pts(vote3), seven_pts(vote4), six_pts(vote5),
-           five_pts(vote6), four_pts(vote7), three_pts(vote8), two_pts(vote9),
-           one_pts(vote10){}

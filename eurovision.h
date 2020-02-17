@@ -48,12 +48,15 @@ class Voter
 // relevant private members can be defined here, if necessary.
     string _state;
     VoterType _type;
+    int _number_of_votes;
 
 public :
     explicit Voter(const string& state, const VoterType& type = Regular);
     ~Voter() = default;
     string state() const;
+    int timesOfVotes() const;
     VoterType voterType() const;
+    Voter& operator++();
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
