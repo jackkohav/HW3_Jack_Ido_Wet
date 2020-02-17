@@ -6,7 +6,16 @@
 //----------------------------------------------MainControl class:---------------------------------------------------
 
 MainControl::MainControl(const int &max_length, const int &max_participants, const int &max_votes):
-    _max_time_length(max_length), _max_participants(max_participants), _max_votes(max_votes), _phase(Registration){}
+        _max_time_length(max_length), _max_participants(max_participants), _max_votes(max_votes), _phase(Registration),
+        _number_of_votes(0){
+    _participants = new Participant*[max_participants];
+    _regular_votes = new int[max_participants];
+    _judges_votes = new int[max_participants];
+    for(int i = 0; i < max_participants; ++i){
+        _regular_votes[i] = 0;
+        _judges_votes[i] = 0;
+    }
+}
 
 //----------------------------------------------Participant class:---------------------------------------------------
 

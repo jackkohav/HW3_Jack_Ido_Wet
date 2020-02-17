@@ -109,7 +109,9 @@ class MainControl
     int _max_time_length;
     int _max_participants;
     Participant** _participants;
-    Vote** _votes;
+    int* _regular_votes; //holds in the i'th place the amount of votes given from the audience to the i'th participant
+    int* _judges_votes;   //holds in the i'th place the amount of votes given from the judges to the i'th participant
+    int _number_of_votes;
 
 public :
 // need to define here possibly c'tr and d'tr and ONLY methods that
