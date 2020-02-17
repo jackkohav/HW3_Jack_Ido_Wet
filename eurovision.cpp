@@ -4,47 +4,47 @@
 #include <array>
 
 Participant::Participant(const string& state, const string& song, const int& timeLength,
-                         const string& singer): State(state), Song(song),
-        Time_Length(timeLength), Singer(singer), Is_Registered(false){}
+                         const string& singer): _state(state), _song(song),
+        _time_length(timeLength), _singer(singer), _is_registered(false){}
 
 string Participant::state() const{
-    return State;
+    return _state;
 }
 
 string Participant::song() const{
-    return Song;
+    return _song;
 }
 
 int Participant::timeLength() const{
-    return Time_Length;
+    return _time_length;
 }
 
 string Participant::singer() const{
-    return Singer;
+    return _singer;
 }
 
 bool Participant::isRegistered() const{
-    return Is_Registered;
+    return _is_registered;
 }
 
 
-Voter::Voter(const string& state, const VoterType& type): State(state), Type(type) {
+Voter::Voter(const string& state, const VoterType& type): _state(state), Type(type) {
 }
 
 
 void Participant::update(const string& new_song, const int& new_time_length, const string& new_singer) {
-    if(Is_Registered)
+    if(_is_registered)
         return;
     if(new_song != "")
-        Song = new_song;
+        _song = new_song;
     if(new_time_length != 0)
-        Time_Length = new_time_length;
+        _time_length = new_time_length;
     if(new_singer != "")
-        Singer = new_singer;
+        _singer = new_singer;
 }
 
 void Participant::updateRegistered(bool is_registered){
-    Is_Registered = is_registered;
+    _is_registered = is_registered;
 }
 
 
@@ -55,7 +55,7 @@ std::ostream& operator<<(std::ostream& os, Participant& p){
 }
 
 string Voter::state() const{
-    return State;
+    return _state;
 }
 
 VoterType Voter::voterType() const {
