@@ -28,11 +28,11 @@ bool Participant::isRegistered() const{
 }
 
 
-Voter::Voter(string state, VoterType type): State(state), Type(type) {
+Voter::Voter(const string& state, const VoterType& type): State(state), Type(type) {
 }
 
 
-void Participant::update(string new_song, int new_time_length, string new_singer) {
+void Participant::update(const string& new_song, const int& new_time_length, const string& new_singer) {
     if(Is_Registered)
         return;
     if(new_song != "")

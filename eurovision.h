@@ -33,7 +33,7 @@ public :
     int timeLength() const;
     string singer() const;
     bool isRegistered() const;
-    void update(string new_song, int new_time_length, string new_singer);
+    void update(const string& new_song, const int& new_time_length, const string& new_singer);
     void updateRegistered(bool is_registered);
     Participant& operator=(const Participant& p) = delete;
 // NO friend is allowed here.
@@ -51,7 +51,7 @@ class Voter
     int number_of_votes;
 
 public :
-    explicit Voter(string state, VoterType type = Regular);
+    explicit Voter(const string& state, const VoterType& type = Regular);
     ~Voter() = default;
     string state() const;
     VoterType voterType() const;
