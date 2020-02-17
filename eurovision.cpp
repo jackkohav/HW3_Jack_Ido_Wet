@@ -18,12 +18,15 @@ string Participant::song(){
 int Participant::timeLength() {
     return Time_Length;
 }
+
 string Participant::singer(){
     return Singer;
 }
+
 bool Participant::isRegistered(){
     return Is_Registered;
 }
+
 void Participant::update(string new_song, int new_time_length, string new_singer) {
     if(Is_Registered)
         return;
@@ -34,9 +37,11 @@ void Participant::update(string new_song, int new_time_length, string new_singer
     if(new_singer != "")
         Singer = new_singer;
 }
+
 void Participant::updateRegistered(bool is_registered){
     Is_Registered = is_registered;
 }
+
 std::ostream& operator<<(std::ostream& os, Participant& p){
     os << "[" << p.state() << "/" << p.song() << "/" << p.timeLength() << "/" << p.singer() << "]";
     return os;
