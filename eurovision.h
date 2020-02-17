@@ -28,18 +28,21 @@ public :
     Participant(string state, string song, int timeLength, string singer);
     Participant(const Participant& p) = delete;
     ~Participant();
-    string state();
-    string song();
-    int timeLength();
-    string singer();
-    bool isRegistered();
+    string state() const;
+    string song() const;
+    int timeLength() const;
+    string singer() const;
+    bool isRegistered() const;
     Participant& operator=(const Participant& p) = delete;
+
+    void update(const string& new_song, const int& new_duration, const string& new_singer);
 // NO friend is allowed here.
 
 };
-std::ostream& operator <<(std::ostream os, Participant& p);
+
 //---------------------------------------------------
 
+std::ostream& operator<<(std::ostream os, const Participant& p);
 
 class Voter
 {

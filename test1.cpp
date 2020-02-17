@@ -98,7 +98,7 @@ TEST("1.4")
 TEST("1.5")
   cout << p1 << endl;
   p1.update("Song_Israel",175,"Singer_Israel");
-  cout<< p1 << endl;
+  cout << p1 << endl;
 
   p1.updateRegistered(true); // Although it's a public method, we assume
                              //   that ONLY MainControl will use it for

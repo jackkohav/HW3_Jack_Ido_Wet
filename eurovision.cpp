@@ -7,24 +7,24 @@ Participant::Participant(string state, string song, int timeLength,
                          string singer): State(state), Song(song),
         Time_Length(timeLength), Singer(singer), Is_Registered(false){}
 
-string Participant::state(){
+string Participant::state() const{
     return State;
 }
 
-string Participant::song(){
+string Participant::song() const{
     return Song;
 }
 
-int Participant::timeLength() {
+int Participant::timeLength() const{
     return Time_Length;
 }
-string Participant::singer(){
+string Participant::singer() const{
     return Singer;
 }
-bool Participant::isRegistered(){
+bool Participant::isRegistered() const{
     return Is_Registered;
 }
-std::ostream& operator<<(std::ostream& os, Participant& p){
+std::ostream& operator<<(std::ostream os, const Participant& p){
     os << "[" << p.state() << "/" << p.song() << "/" << p.timeLength() << "/" << p.singer() << "]";
     return os;
 }
@@ -52,4 +52,17 @@ Iterator get(Iterator begin, Iterator end, int i){
         }
     }
     return jth_max;
+}
+
+void Participant::update(const string& new_song, const int& new_duration, const string& new_singer){
+    if(new_song != ""){
+        Song = new_song;
+    }
+    if(new_duration != 0){
+        Time_Length = new_duration;
+    }
+    if(new_singer != ""){
+        Singer = new_singer;
+    }
+
 }
