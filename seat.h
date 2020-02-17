@@ -53,7 +53,7 @@ protected:
     static int addition_main_hall;
 public:
     MainHallSeat(const int& line, const int& chair, const int& base_price):
-        Seat(line, chair, base_price){}
+            Seat(line, chair, base_price){}
 };
 
 // ---------------------------------------------
