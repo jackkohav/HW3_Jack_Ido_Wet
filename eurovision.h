@@ -47,7 +47,7 @@ class Voter
 {
 // relevant private members can be defined here, if necessary.
     string _state;
-    VoterType Type;
+    VoterType _type;
 
 public :
     explicit Voter(const string& state, const VoterType& type = Regular);

@@ -28,7 +28,7 @@ bool Participant::isRegistered() const{
 }
 
 
-Voter::Voter(const string& state, const VoterType& type): _state(state), Type(type) {
+Voter::Voter(const string& state, const VoterType& type): _state(state), _type(type) {
 }
 
 
@@ -59,7 +59,7 @@ string Voter::state() const{
 }
 
 VoterType Voter::voterType() const {
-    return Type;
+    return _type;
 }
 
 template<typename Iterator>
