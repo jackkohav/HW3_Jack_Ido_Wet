@@ -48,7 +48,6 @@ class Voter
 // relevant private members can be defined here, if necessary.
     string State;
     VoterType Type;
-    int number_of_votes;
 
 public :
     explicit Voter(const string& state, const VoterType& type = Regular);
