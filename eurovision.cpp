@@ -3,6 +3,13 @@
 #include "eurovision.h"
 #include <array>
 
+//----------------------------------------------MainControl class:---------------------------------------------------
+
+MainControl::MainControl(const int &max_length, const int &max_participants, const int &max_votes):
+    _max_time_length(max_length), _max_participants(max_participants), _max_votes(max_votes), _phase(Registration){}
+
+//----------------------------------------------Participant class:---------------------------------------------------
+
 Participant::Participant(const string& state, const string& song, const int& timeLength,
                          const string& singer): _state(state), _song(song),
         _time_length(timeLength), _singer(singer), _is_registered(false){}
@@ -42,7 +49,7 @@ void Participant::updateRegistered(bool is_registered){
     _is_registered = is_registered;
 }
 
-
+//----------------------------------------------Voter class:---------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, Participant& p){
     os << "[" << p.state() << "/" << p.song() << "/" << p.timeLength() << "/" << p.singer() << "]";
@@ -69,8 +76,7 @@ Voter& Voter::operator++() {
     return *this;
 }
 
-
-
+//----------------------------------------------Vote struct:---------------------------------------------------------
 
 Vote::Vote(const Voter& voter, const string& vote):
         voter(voter.state(), voter.voterType()), twelve_pts(""), ten_pts(""),
@@ -93,8 +99,7 @@ Vote::Vote(const Voter &voter, const string &vote1, const string &vote2,
            five_pts(vote6), four_pts(vote7), three_pts(vote8), two_pts(vote9),
            one_pts(vote10){}
 
-
-
+//----------------------------------------------part b.1:-----------------------------------------------------------
 
 template<typename Iterator>
 Iterator get(Iterator begin, Iterator end, int i){

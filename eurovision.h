@@ -104,14 +104,19 @@ struct Vote
 class MainControl
 {
 // relevant private members can be defined here, if necessary.
+    Phase _phase;
+    int _max_votes;
+    int _max_time_length;
+    int _max_participants;
+    Participant** _participants;
+    Vote** _votes;
 
 public :
-
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
-
 // Also it's allowed here to define friend.
+    MainControl(const int& max_length = 180, const int& max_participants = 26, const int& max_votes = 5);
 
 };
 
