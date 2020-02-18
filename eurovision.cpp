@@ -1,20 +1,27 @@
 #include <iostream>
 #include <string>
 #include "eurovision.h"
-#include <array>
 
 //----------------------------------------------MainControl class:---------------------------------------------------
 
-MainControl::MainControl(const int &max_length, const int &max_participants, const int &max_votes):
-        _max_time_length(max_length), _max_participants(max_participants), _max_votes(max_votes), _phase(Registration),
-        _number_of_votes(0){
-    _participants = new Participant*[max_participants];
-    _regular_votes = new int[max_participants];
-    _judges_votes = new int[max_participants];
-    for(int i = 0; i < max_participants; ++i){
-        _regular_votes[i] = 0;
-        _judges_votes[i] = 0;
+MainControl::MainControl(int max_length, int max_participants, int max_votes):
+        _max_votes(max_votes), _number_of_votes(0), _max_time_length(max_length),
+        _max_participants(max_participants), _number_of_participants(0),
+        _phase(Registration), _participants(new const Participant*[max_participants]()),
+        _regular_votes(new const int[max_participants]()), _judge_votes(new const int[max_participants]()){}
+
+
+MainControl::~MainControl() {
+    delete[](_participants);
+    delete[](_regular_votes);
+    delete[](_judge_votes);
+}
+
+MainControl& MainControl::operator+=(const Participant& p) {
+    if(_number_of_participants < _max_participants) {
+        _participants[_number_of_participants++] = &p;
     }
+    return *this;
 }
 
 //----------------------------------------------Participant class:---------------------------------------------------
@@ -99,10 +106,10 @@ Vote::Vote(const Voter& voter, const string& vote):
     }
 }
 
-Vote::Vote(const Voter &voter, const string &vote1, const string &vote2,
-           const string &vote3, const string &vote4, const string &vote5,
-           const string &vote6, const string &vote7, const string &vote8,
-           const string &vote9, const string &vote10):
+Vote::Vote(const Voter& voter, const string& vote1, const string& vote2,
+           const string& vote3, const string& vote4, const string& vote5,
+           const string& vote6, const string& vote7, const string& vote8,
+           const string& vote9, const string& vote10):
            voter(voter.state(), voter.voterType()),  twelve_pts(vote1),
            ten_pts(vote2), eight_pts(vote3), seven_pts(vote4), six_pts(vote5),
            five_pts(vote6), four_pts(vote7), three_pts(vote8), two_pts(vote9),
@@ -118,19 +125,19 @@ Iterator get(Iterator begin, Iterator end, int i){
         ++size;
     }
     if(size < i) return end;
-    Iterator jth_max = begin;
+    Iterator jth_to_max = begin;
     Iterator current_max = begin;
     for(int j  = 0; j < i; ++j){
         for(Iterator k = begin; k != end; ++k){
-            if(*k > *current_max && *current_max < *jth_max) current_max = k;
+            if(*k > *current_max && *current_max < *jth_to_max) current_max = k;
         }
-        jth_max = current_max;
+        jth_to_max = current_max;
         for(Iterator l = begin; l != end; ++l){
-            if(*l < *jth_max){
+            if(*l < *jth_to_max){
                 current_max = l;
                 break;
             }
         }
     }
-    return jth_max;
+    return jth_to_max;
 }

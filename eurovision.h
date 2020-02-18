@@ -106,20 +106,23 @@ class MainControl
 // relevant private members can be defined here, if necessary.
     Phase _phase;
     int _max_votes;
+    int _number_of_votes;
     int _max_time_length;
     int _max_participants;
-    Participant** _participants;
-    int* _regular_votes; //holds in the i'th place the amount of votes given from the audience to the i'th participant
-    int* _judges_votes;   //holds in the i'th place the amount of votes given from the judges to the i'th participant
-    int _number_of_votes;
+    int _number_of_participants;
+    const Participant** _participants;
+    const int* _regular_votes; //holds in the i'th place the amount of votes given from the audience to the i'th participant
+    const int* _judge_votes;   //holds in the i'th place the amount of votes given from the judges to the i'th participant
+
 
 public :
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
 // Also it's allowed here to define friend.
-    MainControl(const int& max_length = 180, const int& max_participants = 26, const int& max_votes = 5);
-
+    explicit MainControl(int max_length = 180, int max_participants = 26, int max_votes = 5);
+    ~MainControl();
+    MainControl& operator+=(const Participant& p);
 };
 
 // -----------------------------------------------------------
