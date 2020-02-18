@@ -62,7 +62,15 @@ MainControl& MainControl::operator-=(Participant& p) {
 }
 
 MainControl& MainControl::operator+=(Vote& v){
-
+    if(_phase != Voting) return *this;
+    if((v._voter.voterType() == Regular) && v._voter.timesOfVotes() <= _max_votes) {
+        for(int i = 0; i < _max_participants; ++i){
+            if(_participants[i]->state() == v._points[9]){
+                ++_regular_votes[i];
+                ++(v._voter);
+            }
+        }
+    }
 }
 
 std::ostream& operator<<(std::ostream& os, const MainControl& mainControl){
@@ -146,14 +154,15 @@ Voter& Voter::operator++() {
 //----------------------------------------------Vote struct:---------------------------------------------------------
 
 Vote::Vote(const Voter& voter, const string& vote):
-        voter(voter.state(), voter.voterType()), twelve_pts(""), ten_pts(""),
-        eight_pts(""), seven_pts(""), six_pts(""), five_pts(""),
-        four_pts(""), three_pts(""), two_pts(""), one_pts(""){
+        _voter(voter.state(), voter.voterType()){
+    for(int i = 0; i < 10; ++i){
+        _points[i] = string("");
+    }
     if(voter.voterType() == Regular){
-        one_pts = string(vote);
+        _points[9] = string(vote);
     }
     else{
-        twelve_pts = string(vote);
+        _points[0] = string(vote);
     }
 }
 
@@ -161,10 +170,18 @@ Vote::Vote(const Voter& voter, const string& vote1, const string& vote2,
            const string& vote3, const string& vote4, const string& vote5,
            const string& vote6, const string& vote7, const string& vote8,
            const string& vote9, const string& vote10):
-           voter(voter.state(), voter.voterType()),  twelve_pts(vote1),
-           ten_pts(vote2), eight_pts(vote3), seven_pts(vote4), six_pts(vote5),
-           five_pts(vote6), four_pts(vote7), three_pts(vote8), two_pts(vote9),
-           one_pts(vote10){}
+           _voter(voter.state(), voter.voterType()){
+    _points[0] = vote1;
+    _points[1] = vote2;
+    _points[2] = vote3;
+    _points[3] = vote4;
+    _points[4] = vote5;
+    _points[5] = vote6;
+    _points[6] = vote7;
+    _points[7] = vote8;
+    _points[8] = vote9;
+    _points[9] = vote10;
+}
 
 //----------------------------------------------part b.1:-----------------------------------------------------------
 

@@ -74,17 +74,8 @@ std::ostream& operator<<(std::ostream& os, const Voter& v){
 
 struct Vote
 {
-    string twelve_pts;
-    string ten_pts;
-    string eight_pts;
-    string seven_pts;
-    string six_pts;
-    string five_pts;
-    string four_pts;
-    string three_pts;
-    string two_pts;
-    string one_pts;
-    Voter voter;
+    string _points[10];
+    Voter _voter;
     Vote(const Voter& voter, const string& vote);
     Vote(const Voter& voter, const string& vote1, const string& vote2,
         const string& vote3 = string(""), const string& vote4 = string(""),
@@ -111,8 +102,8 @@ class MainControl
     int _max_participants;
     int _number_of_participants;
     const Participant** _participants;
-    const int* _regular_votes; //holds in the i'th place the amount of votes given from the audience to the i'th participant
-    const int* _judge_votes;   //holds in the i'th place the amount of votes given from the judges to the i'th participant
+    int* _regular_votes; //holds in the i'th place the amount of votes given from the audience to the i'th participant
+    int* _judge_votes;   //holds in the i'th place the amount of votes given from the judges to the i'th participant
 
 
 public :
