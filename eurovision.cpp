@@ -74,13 +74,13 @@ MainControl& MainControl::operator+=(Vote v){
                 ++(v._voter);
             }
         }
-    } else {
+    } else if(v._voter.voterType() == Judge){
         int points_for_places[10] = {12, 10, 8, 7, 6, 5, 4, 3, 2, 1};
         if(v._voter.timesOfVotes() >= 1) return *this;
         for(int i = 0; i < 10; ++i){
             for(int j = 0; j < _max_participants; ++j){
                 if(_participants[j]->state() == v._points[i]){
-                    _regular_votes[j] += (points_for_places[i]);
+                    _judge_votes[j] += (points_for_places[i]);
                     ++(v._voter);
                 }
             }
