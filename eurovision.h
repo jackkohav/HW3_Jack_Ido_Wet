@@ -122,7 +122,14 @@ public :
 // Also it's allowed here to define friend.
     explicit MainControl(int max_length = 180, int max_participants = 26, int max_votes = 5);
     ~MainControl();
-    MainControl& operator+=(const Participant& p);
+    void setPhase(const Phase& phase);
+    bool legalParticipant(const Participant& p) const;
+    bool participate(const string& state_name) const;
+    MainControl& operator+=(Participant& p);
+    MainControl& operator-=(Participant& p);
+    MainControl& operator+=(Vote& v);
+
+    friend std::ostream& operator<<(std::ostream& os, const MainControl& mainControl);
 };
 
 // -----------------------------------------------------------

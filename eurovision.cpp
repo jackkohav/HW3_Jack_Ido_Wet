@@ -4,6 +4,7 @@
 
 //----------------------------------------------MainControl class:---------------------------------------------------
 
+
 MainControl::MainControl(int max_length, int max_participants, int max_votes):
         _max_votes(max_votes), _number_of_votes(0), _max_time_length(max_length),
         _max_participants(max_participants), _number_of_participants(0),
@@ -17,11 +18,61 @@ MainControl::~MainControl() {
     delete[](_judge_votes);
 }
 
-MainControl& MainControl::operator+=(const Participant& p) {
-    if(_number_of_participants < _max_participants) {
+bool MainControl::legalParticipant(const Participant &p) const {
+    return ( p.state() != "" && p.song() != "" && p.singer() != ""
+            && p.timeLength() <= _max_time_length );
+}
+
+bool MainControl::participate(const string& state_name) const{
+    for(int i = 0; i < _number_of_participants; ++i){
+        if(_participants[i]->state() == state_name) return true;
+    }
+    return false;
+}
+
+void MainControl::setPhase(const Phase& phase) {
+    if( (_phase == Registration && phase == Contest) ||
+            (_phase == Contest && phase == Voting) ){
+        _phase = phase;
+    }
+}
+
+MainControl& MainControl::operator+=(Participant& p) {
+    if(legalParticipant(p) && _number_of_participants < _max_participants
+            && _phase == Registration && !participate(p.state())) {
         _participants[_number_of_participants++] = &p;
+        p.updateRegistered(true);
     }
     return *this;
+}
+
+MainControl& MainControl::operator-=(Participant& p) {
+    if(_phase != Registration || !p.isRegistered()) return *this;
+    int participant_index = 0;
+    for(int i = 0; i < _number_of_participants; ++i){
+        if(_participants[i]->state() ==  p.state()){
+            participant_index = i;
+            break;
+        }
+    }
+    for(int i = participant_index + 1; i < _number_of_participants; ++i){
+        _participants[i - 1] = _participants[i];
+    }
+    _participants[--_number_of_participants] = NULL;
+}
+
+MainControl& MainControl::operator+=(Vote& v){
+
+}
+
+std::ostream& operator<<(std::ostream& os, const MainControl& mainControl){
+    os << "{" << std::endl << "Voting" << std::endl;
+    for(int i = 0; i < mainControl._number_of_participants; ++i){
+        os << mainControl._participants[i]->state() << " : Regular(" <<
+        mainControl._regular_votes[i] << ") Judge(" << mainControl._judge_votes[i] << ")" << std::endl;
+    }
+    os << "}";
+    return os;
 }
 
 //----------------------------------------------Participant class:---------------------------------------------------

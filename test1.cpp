@@ -205,7 +205,7 @@ TEST("1.7")
 
 
 TEST("1.8")
-cout << eurovision.legalParticipant(p1) << endl; // will display 1 (bool)
+cout << eurovision.legalParticipant(p1) << endl; // will display 1 (true)
 cout << eurovision.legalParticipant(p3) << endl; // will display 0 (false)
 
 /* the operation legalParticipant checks if all the following exists :
@@ -235,7 +235,7 @@ TEST("1.9")
 
 TEST("1.10")
   cout << eurovision.participate("Israel");  // 1 (true). The state Israel is registered and participates.
-  cout << eurovision.participate("France");  // 0 (false). France is not registered, therefoe does not participate.
+  cout << eurovision.participate("France");  // 0 (false). France is not registered, therefore does not participate.
 
   cout << "------------------------------" << endl;
 
