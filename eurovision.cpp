@@ -9,7 +9,7 @@ MainControl::MainControl(int max_length, int max_participants, int max_votes):
         _max_votes(max_votes), _number_of_votes(0), _max_time_length(max_length),
         _max_participants(max_participants), _number_of_participants(0),
         _phase(Registration), _participants(new const Participant*[max_participants]()),
-        _regular_votes(new const int[max_participants]()), _judge_votes(new const int[max_participants]()){}
+        _regular_votes(new int[max_participants]()), _judge_votes(new int[max_participants]()){}
 
 
 MainControl::~MainControl() {
@@ -61,16 +61,32 @@ MainControl& MainControl::operator-=(Participant& p) {
     _participants[--_number_of_participants] = NULL;
 }
 
-MainControl& MainControl::operator+=(Vote& v){
+MainControl& MainControl::operator+=(Vote v){
     if(_phase != Voting) return *this;
-    if((v._voter.voterType() == Regular) && v._voter.timesOfVotes() <= _max_votes) {
+    if(v._voter.voterType() == Regular) {
+        if(v._voter.timesOfVotes() >= _max_votes) return *this;
+        for(int i = 0; i < 9; ++i){
+            if(v._points[i] != "") return *this;
+        }
         for(int i = 0; i < _max_participants; ++i){
             if(_participants[i]->state() == v._points[9]){
                 ++_regular_votes[i];
                 ++(v._voter);
             }
         }
+    } else {
+        int points_for_places[10] = {12, 10, 8, 7, 6, 5, 4, 3, 2, 1};
+        if(v._voter.timesOfVotes() >= 1) return *this;
+        for(int i = 0; i < 10; ++i){
+            for(int j = 0; j < _max_participants; ++j){
+                if(_participants[j]->state() == v._points[i]){
+                    _regular_votes[j] += (points_for_places[i]);
+                    ++(v._voter);
+                }
+            }
+        }
     }
+    return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const MainControl& mainControl){

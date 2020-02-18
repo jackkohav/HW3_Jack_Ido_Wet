@@ -118,7 +118,7 @@ public :
     bool participate(const string& state_name) const;
     MainControl& operator+=(Participant& p);
     MainControl& operator-=(Participant& p);
-    MainControl& operator+=(Vote& v);
+    MainControl& operator+=(Vote v);
 
     friend std::ostream& operator<<(std::ostream& os, const MainControl& mainControl);
 };
