@@ -118,6 +118,24 @@ public :
     MainControl& operator+=(Vote v);
 
     friend std::ostream& operator<<(std::ostream& os, const MainControl& mainControl);
+
+    class Iterator;
+    Iterator begin() const;
+    Iterator end() const;
+};
+
+class MainControl::Iterator{
+    const MainControl* eurovision;
+    int index;
+    Iterator(const MainControl* eurovision, int index);
+    friend class MainControl;
+
+public:
+    const Participant& operator*() const;
+    Iterator& operator++();
+    bool operator==(const Iterator& i) const;
+    bool operator<(const Iterator& i) const;
+    Iterator&operator--() = delete;
 };
 
 // -----------------------------------------------------------
