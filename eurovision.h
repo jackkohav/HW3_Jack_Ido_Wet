@@ -39,7 +39,7 @@ public :
 // NO friend is allowed here.
 
 };
-std::ostream& operator <<(std::ostream& os, Participant& p);
+std::ostream& operator <<(std::ostream& os, const Participant& p);
 //---------------------------------------------------
 
 
@@ -65,19 +65,16 @@ public :
 
 };
 
-std::ostream& operator<<(std::ostream& os, const Voter& v){
-    os << "<" << v.state() << "/" << v.voterType() << ">";
-    return os;
-}
+std::ostream& operator<<(std::ostream& os, const Voter& v);
 
 // -----------------------------------------------------------
 
 struct Vote
 {
     string _points[10];
-    Voter _voter;
-    Vote(const Voter& voter, const string& vote);
-    Vote(const Voter& voter, const string& vote1, const string& vote2,
+    Voter* _voter;
+    Vote(Voter& voter, const string& vote);
+    Vote(Voter& voter, const string& vote1, const string& vote2,
         const string& vote3 = string(""), const string& vote4 = string(""),
         const string& vote5 = string(""), const string& vote6 = string(""),
         const string& vote7 = string(""), const string& vote8 = string(""),

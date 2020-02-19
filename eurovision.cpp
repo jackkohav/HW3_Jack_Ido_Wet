@@ -59,43 +59,77 @@ MainControl& MainControl::operator-=(Participant& p) {
         _participants[i - 1] = _participants[i];
     }
     _participants[--_number_of_participants] = NULL;
+    p.updateRegistered(false);
+    return *this;
 }
 
 MainControl& MainControl::operator+=(Vote v){
     if(_phase != Voting) return *this;
-    if(v._voter.voterType() == Regular) {
-        if(v._voter.timesOfVotes() >= _max_votes) return *this;
+    if(v._voter->voterType() == Regular) {
+        if(v._voter->timesOfVotes() >= _max_votes || v._voter->state() == v._points[9]) return *this;
+
         for(int i = 0; i < 9; ++i){
             if(v._points[i] != "") return *this;
         }
+
         for(int i = 0; i < _max_participants; ++i){
             if(_participants[i]->state() == v._points[9]){
                 ++_regular_votes[i];
-                ++(v._voter);
+                break;
             }
         }
-    } else if(v._voter.voterType() == Judge){
+    } else {
         int points_for_places[10] = {12, 10, 8, 7, 6, 5, 4, 3, 2, 1};
-        if(v._voter.timesOfVotes() >= 1) return *this;
+        if(v._voter->timesOfVotes() >= 1) return *this;
+        for(int i = 0; i < _number_of_participants; ++i) {
+        }
         for(int i = 0; i < 10; ++i){
+            if(v._points[i] == ""){
+                return *this;
+            }
             for(int j = 0; j < _max_participants; ++j){
-                if(_participants[j]->state() == v._points[i]){
+                if(_participants[j]->state() == v._points[i] && v._points[i] != v._voter->state()){
                     _judge_votes[j] += (points_for_places[i]);
-                    ++(v._voter);
+                    break;
                 }
             }
         }
     }
+    ++(*v._voter);
     return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const MainControl& mainControl){
-    os << "{" << std::endl << "Voting" << std::endl;
+
+    os << "{" << std::endl;
+    if(mainControl._phase == Registration) os << "Registration";
+    if(mainControl._phase == Contest) os << "Contest";
+    if(mainControl._phase == Voting) os << "Voting";
+    os << std::endl;
+    string last_min = "";
+    string current_min;
+    int current_index;
     for(int i = 0; i < mainControl._number_of_participants; ++i){
-        os << mainControl._participants[i]->state() << " : Regular(" <<
-        mainControl._regular_votes[i] << ") Judge(" << mainControl._judge_votes[i] << ")" << std::endl;
+        current_min = "";
+        for(int j = 0; j < mainControl._number_of_participants; ++j){
+            if(mainControl._participants[j]->state() < current_min || current_min == ""){
+                if(mainControl._participants[j]->state() > last_min){
+                    current_min = mainControl._participants[j]->state();
+                    current_index = j;
+                }
+            }
+        }
+        if(mainControl._phase == Registration) {
+            os << *(mainControl._participants[current_index]) << std::endl;
+        }
+        else if(mainControl._phase == Voting){
+            os << mainControl._participants[current_index]->state() << " : Regular(" <<
+               mainControl._regular_votes[current_index] << ") Judge(" <<
+               mainControl._judge_votes[current_index] << ")" << std::endl;
+        }
+        last_min = current_min;
     }
-    os << "}";
+    os << "}" << std::endl;
     return os;
 }
 
@@ -140,10 +174,18 @@ void Participant::updateRegistered(bool is_registered){
     _is_registered = is_registered;
 }
 
+std::ostream& operator<<(std::ostream& os, const Participant& p){
+    os << "[" << p.state() << "/" << p.song() << "/" << p.timeLength() << "/" << p.singer() << "]";
+    return os;
+}
+
 //----------------------------------------------Voter class:---------------------------------------------------------
 
-std::ostream& operator<<(std::ostream& os, Participant& p){
-    os << "[" << p.state() << "/" << p.song() << "/" << p.timeLength() << "/" << p.singer() << "]";
+
+std::ostream& operator<<(std::ostream& os, const Voter& v){
+    os << "<" << v.state() << "/";
+    if(v.voterType() == Regular) os << "Regular>";
+    if(v.voterType() == Judge) os << "Judge>";
     return os;
 }
 
@@ -169,8 +211,8 @@ Voter& Voter::operator++() {
 
 //----------------------------------------------Vote struct:---------------------------------------------------------
 
-Vote::Vote(const Voter& voter, const string& vote):
-        _voter(voter.state(), voter.voterType()){
+Vote::Vote(Voter& voter, const string& vote){
+    _voter = &voter;
     for(int i = 0; i < 10; ++i){
         _points[i] = string("");
     }
@@ -182,11 +224,11 @@ Vote::Vote(const Voter& voter, const string& vote):
     }
 }
 
-Vote::Vote(const Voter& voter, const string& vote1, const string& vote2,
+Vote::Vote(Voter& voter, const string& vote1, const string& vote2,
            const string& vote3, const string& vote4, const string& vote5,
            const string& vote6, const string& vote7, const string& vote8,
-           const string& vote9, const string& vote10):
-           _voter(voter.state(), voter.voterType()){
+           const string& vote9, const string& vote10) {
+    _voter = &voter;
     _points[0] = vote1;
     _points[1] = vote2;
     _points[2] = vote3;
@@ -198,6 +240,7 @@ Vote::Vote(const Voter& voter, const string& vote1, const string& vote2,
     _points[8] = vote9;
     _points[9] = vote10;
 }
+
 
 //----------------------------------------------part b.1:-----------------------------------------------------------
 
