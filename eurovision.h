@@ -131,9 +131,12 @@ class MainControl::Iterator{
     friend class MainControl;
 
 public:
+    Iterator(const Iterator&) = default;
+    Iterator& operator=(const Iterator&) = default;
     const Participant& operator*() const;
     Iterator& operator++();
     bool operator==(const Iterator& i) const;
+    bool operator!=(const Iterator& i) const;
     bool operator<(const Iterator& i) const;
     Iterator&operator--() = delete;
 };
