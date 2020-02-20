@@ -15,9 +15,7 @@ using std::endl;
 
 int main()
 {
-
   MainControl eurovision;
-
 /* The same as defining with the default values
    MainControl eurovision(180, 26, 5);
    180 - max allowed time length (seconds) of a song
@@ -104,7 +102,6 @@ TEST("1.5")
                              //   that ONLY MainControl will use it for
                              //   inner purposes. p1 is signed as registered in the system.
   p1.updateRegistered(false); // Same remarks. Now it is not registered.
-
 //------------------------------------------------
 
 TEST("1.6")
@@ -205,8 +202,8 @@ TEST("1.7")
 
 
 TEST("1.8")
-cout << eurovision.legalParticipant(p1) << endl; // will display 1 (true)
-cout << eurovision.legalParticipant(p3) << endl; // will display 0 (false)
+cout << eurovision.legalParticipant(p1); // will display 1 (true)
+cout << eurovision.legalParticipant(p3); // will display 0 (false)
 
 /* the operation legalParticipant checks if all the following exists :
    the names of the state and the song and the singer are not empty "",
@@ -330,7 +327,6 @@ TEST("1.15")
   ((((eurovision += Vote(vr5, "Australia")) += Vote(vr5, "Israel")) += Vote(vr5, "Cyprus")) += Vote(vr5, "UK")) +=
            Vote(vr5, "Australia");
   cout << eurovision << endl;
-
 TEST("1.16")
   eurovision += Vote(vr5, "Cyprus"); /* This vote succeeds. Only 3 of the former 5 votes of vr5 have been suceeded
                                         (vr5 can not vote for his own country Australia). Therefore still has not
@@ -347,14 +343,12 @@ TEST("1.17")
 
 
   //new test___________________________________________________________________________________________________
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  TEST("2.1")
-  MainControl euro0(400, 4, 2);
-  MainControl euro1(200, 40);
-  MainControl euro2(10);
 
+//  TEST("2.1")
+//  MainControl euro0(400, 4, 2);
+//  MainControl euro1(200, 40);
+//  MainControl euro2(10);
+//
 
   return 0;
 }

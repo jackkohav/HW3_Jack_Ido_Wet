@@ -1,16 +1,127 @@
 #include <iostream>
-#include <string>
 #include "eurovision.h"
 
+void error(const char* str) {
+    std::cerr << "Error: " << str << std::endl;
+    exit(0);
+}
+
+int strcmp(const char* String1, const char* String2)
+{
+    for (int i = 0; ; i++)
+    {
+        if (String1[i] != String2[i])
+        {
+            return String1[i] < String2[i] ? -1 : 1;
+        }
+
+        if (String1[i] == '\0')
+        {
+            return 0;
+        }
+    }
+}
+
+int strlen(const char* str) {
+    const char *s;
+    for (s = str; *s; ++s)
+        ;
+    return (s - str);
+}
+
+char* strcpy(char *c, const char* s)
+{
+    int i = 0;
+    for(i=0; i <= strlen(s); i++)
+        c[i]=s[i];
+    return c;
+}
+
+char* strcat(char * s1, const char * s2)
+{
+    int i=0;
+    for(i=strlen(s2);i<strlen(s1);i++)
+        s1[i]=s2[i];
+    s1[++i]=0;
+    return s1;
+}
+
+char* String::allocate_and_copy(const char* str, int size) {
+    return strcpy(new char[size + 1], str);
+}
+
+String::String(const char* str) {
+    length = strlen(str);
+    data = allocate_and_copy(str, length);
+}
+String::String(const String& str) :
+        length(str.size()),
+        data(allocate_and_copy(str.data, str.length)) {
+}
+String::~String() {
+    delete[] data;
+}
+int String::size() const {
+    return length;
+}
+
+String& String::operator=(const String& str) {
+    if (this == &str) {
+        return *this;
+    }
+    delete[] data;
+    data = allocate_and_copy(str.data, str.length);
+    length = str.length;
+    return *this;
+}
+String& String::operator+=(const String& str) {
+    char* new_data = allocate_and_copy(data, this->length + str.length);
+    strcat(new_data, str.data);
+    delete[] data;
+    length += str.length;
+    data = new_data;
+    return *this;
+}
+void String::verify_index(int index) const {
+    if (index >= size() || index < 0) {
+        error("Bad index");
+    }
+}
+const char& String::operator[](int index) const {
+    verify_index(index);
+    return data[index];
+}
+char& String::operator[](int index) {
+    verify_index(index);
+    return data[index];
+}
+bool operator==(const String& str1, const String& str2) {
+    return strcmp(str1.data, str2.data) == 0;
+}
+std::ostream& operator<<(std::ostream& os, const String& str) {
+    os << str.data;
+    return os;
+}
+bool operator<(const String& str1, const String& str2) {
+    return strcmp(str1.data, str2.data) < 0;
+}
+bool operator!=(const String& str1, const String& str2) {
+    return !(str1 == str2);
+}
+bool operator<=(const String& str1, const String& str2) {
+    return (str1<str2 || str1==str2);
+}
+bool operator>(const String& str1, const String& str2) {
+    return !(str1 <= str2);
+}
+bool operator>=(const String& str1, const String& str2) {
+    return !(str1 < str2);
+}
+String operator+(const String& str1, const String& str2) {
+    return String(str1) += str2;
+}
+
 //----------------------------------------------MainControl class:---------------------------------------------------
-
-
-MainControl::MainControl(int max_length, int max_participants, int max_votes):
-        _max_votes(max_votes), _number_of_votes(0), _max_time_length(max_length),
-        _max_participants(max_participants), _number_of_participants(0),
-        _phase(Registration), _participants(new const Participant*[max_participants]()),
-        _regular_votes(new int[max_participants]()), _judge_votes(new int[max_participants]()){}
-
 
 MainControl::~MainControl() {
     delete[](_participants);
@@ -19,11 +130,11 @@ MainControl::~MainControl() {
 }
 
 bool MainControl::legalParticipant(const Participant &p) const {
-    return ( p.state() != "" && p.song() != "" && p.singer() != ""
-            && p.timeLength() <= _max_time_length );
+    return ( p.state() != String("") && p.song() != String("")
+        && p.singer() != String("") && p.timeLength() <= _max_time_length );
 }
 
-bool MainControl::participate(const string& state_name) const{
+bool MainControl::participate(const String& state_name) const{
     for(int i = 0; i < _number_of_participants; ++i){
         if(_participants[i]->state() == state_name) return true;
     }
@@ -58,18 +169,18 @@ MainControl& MainControl::operator-=(Participant& p) {
     for(int i = participant_index + 1; i < _number_of_participants; ++i){
         _participants[i - 1] = _participants[i];
     }
-    _participants[--_number_of_participants] = NULL;
+    _participants[--_number_of_participants] = nullptr;
     p.updateRegistered(false);
     return *this;
 }
 
-MainControl& MainControl::operator+=(Vote v){
+MainControl& MainControl::operator+=(const Vote& v){
     if(_phase != Voting) return *this;
     if(v._voter->voterType() == Regular) {
         if(v._voter->timesOfVotes() >= _max_votes || v._voter->state() == v._points[9]) return *this;
 
         for(int i = 0; i < 9; ++i){
-            if(v._points[i] != "") return *this;
+            if(v._points[i] != String("")) return *this;
         }
 
         for(int i = 0; i < _max_participants; ++i){
@@ -84,7 +195,7 @@ MainControl& MainControl::operator+=(Vote v){
         for(int i = 0; i < _number_of_participants; ++i) {
         }
         for(int i = 0; i < 10; ++i){
-            if(v._points[i] == ""){
+            if(v._points[i] == String("")){
                 return *this;
             }
             for(int j = 0; j < _max_participants; ++j){
@@ -106,13 +217,13 @@ std::ostream& operator<<(std::ostream& os, const MainControl& mainControl){
     if(mainControl._phase == Contest) os << "Contest";
     if(mainControl._phase == Voting) os << "Voting";
     os << std::endl;
-    string last_min = "";
-    string current_min;
-    int current_index;
+    String last_min;
+    String current_min;
+    int current_index = 0;
     for(int i = 0; i < mainControl._number_of_participants; ++i){
-        current_min = "";
+        current_min = String("");
         for(int j = 0; j < mainControl._number_of_participants; ++j){
-            if(mainControl._participants[j]->state() < current_min || current_min == ""){
+            if(mainControl._participants[j]->state() < current_min || current_min == String("")){
                 if(mainControl._participants[j]->state() > last_min){
                     current_min = mainControl._participants[j]->state();
                     current_index = j;
@@ -135,15 +246,12 @@ std::ostream& operator<<(std::ostream& os, const MainControl& mainControl){
 
 //----------------------------------------------Participant class:---------------------------------------------------
 
-Participant::Participant(const string& state, const string& song, const int& timeLength,
-                         const string& singer): _state(state), _song(song),
-        _time_length(timeLength), _singer(singer), _is_registered(false){}
 
-string Participant::state() const{
+String Participant::state() const{
     return _state;
 }
 
-string Participant::song() const{
+String Participant::song() const{
     return _song;
 }
 
@@ -151,7 +259,7 @@ int Participant::timeLength() const{
     return _time_length;
 }
 
-string Participant::singer() const{
+String Participant::singer() const{
     return _singer;
 }
 
@@ -159,14 +267,14 @@ bool Participant::isRegistered() const{
     return _is_registered;
 }
 
-void Participant::update(const string& new_song, const int& new_time_length, const string& new_singer) {
+void Participant::update(const String& new_song, const int& new_time_length, const String& new_singer) {
     if(_is_registered)
         return;
-    if(new_song != "")
+    if(new_song != String(""))
         _song = new_song;
     if(new_time_length != 0)
         _time_length = new_time_length;
-    if(new_singer != "")
+    if(new_singer != String(""))
         _singer = new_singer;
 }
 
@@ -189,7 +297,7 @@ std::ostream& operator<<(std::ostream& os, const Voter& v){
     return os;
 }
 
-string Voter::state() const{
+String Voter::state() const{
     return _state;
 }
 
@@ -201,8 +309,6 @@ VoterType Voter::voterType() const {
     return _type;
 }
 
-Voter::Voter(const string& state, const VoterType& type): _state(state), _type(type), _number_of_votes(0) {
-}
 
 Voter& Voter::operator++() {
     ++_number_of_votes;
@@ -211,23 +317,23 @@ Voter& Voter::operator++() {
 
 //----------------------------------------------Vote struct:---------------------------------------------------------
 
-Vote::Vote(Voter& voter, const string& vote){
+Vote::Vote(Voter& voter, const String& vote){
     _voter = &voter;
-    for(int i = 0; i < 10; ++i){
-        _points[i] = string("");
+    for(auto & _point : _points){
+        _point = String("");
     }
     if(voter.voterType() == Regular){
-        _points[9] = string(vote);
+        _points[9] = String(vote);
     }
     else{
-        _points[0] = string(vote);
+        _points[0] = String(vote);
     }
 }
 
-Vote::Vote(Voter& voter, const string& vote1, const string& vote2,
-           const string& vote3, const string& vote4, const string& vote5,
-           const string& vote6, const string& vote7, const string& vote8,
-           const string& vote9, const string& vote10) {
+Vote::Vote(Voter& voter, const String& vote1, const String& vote2,
+           const String& vote3, const String& vote4, const String& vote5,
+           const String& vote6, const String& vote7, const String& vote8,
+           const String& vote9, const String& vote10) {
     _voter = &voter;
     _points[0] = vote1;
     _points[1] = vote2;
@@ -244,27 +350,27 @@ Vote::Vote(Voter& voter, const string& vote1, const string& vote2,
 
 //----------------------------------------------part b.1:-----------------------------------------------------------
 
-template<typename Iterator>
-Iterator get(Iterator begin, Iterator end, int i){
-    if(i < 0) return end;
-    int size = 0;
-    for(Iterator m = begin; m != end; ++m){
-        ++size;
-    }
-    if(size < i) return end;
-    Iterator jth_to_max = begin;
-    Iterator current_max = begin;
-    for(int j  = 0; j < i; ++j){
-        for(Iterator k = begin; k != end; ++k){
-            if(*k > *current_max && *current_max < *jth_to_max) current_max = k;
-        }
-        jth_to_max = current_max;
-        for(Iterator l = begin; l != end; ++l){
-            if(*l < *jth_to_max){
-                current_max = l;
-                break;
-            }
-        }
-    }
-    return jth_to_max;
-}
+//template<typename Iterator>
+//Iterator get(Iterator begin, Iterator end, int i){
+//    if(i < 0) return end;
+//    int size = 0;
+//    for(Iterator m = begin; m != end; ++m){
+//        ++size;
+//    }
+//    if(size < i) return end;
+//    Iterator jth_to_max = begin;
+//    Iterator current_max = begin;
+//    for(int j  = 0; j < i; ++j){
+//        for(Iterator k = begin; k != end; ++k){
+//            if(*k > *current_max && *current_max < *jth_to_max) current_max = k;
+//        }
+//        jth_to_max = current_max;
+//        for(Iterator l = begin; l != end; ++l){
+//            if(*l < *jth_to_max){
+//                current_max = l;
+//                break;
+//            }
+//        }
+//    }
+//    return jth_to_max;
+//}
