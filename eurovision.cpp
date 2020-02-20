@@ -153,11 +153,12 @@ MainControl& MainControl::operator+=(Participant& p) {
             && _phase == Registration && !participate(p.state())) {
         int index = 0;
         for(; index < _number_of_participants; ++index){
-            if(p.state() > (_participants[index])->state())
+            if(p.state() < (_participants[index])->state())
                 break;
         }
-        for(int i = index; i < ++_number_of_participants; ++i){
-            _participants[i+1] = _participants[i];
+
+        for(int i = _number_of_participants++; i > index; --i){
+            _participants[i] = _participants[i-1];
         }
         _participants[index] = &p;
         p.updateRegistered(true);
@@ -345,30 +346,30 @@ Vote::Vote(Voter& voter, const String& vote1, const String& vote2,
 
 //----------------------------------------------part b.1:-----------------------------------------------------------
 
-//template<typename Iterator>
-//Iterator get(Iterator begin, Iterator end, int i){
-//    if(i < 0) return end;
-//    int size = 0;
-//    for(Iterator m = begin; m != end; ++m){
-//        ++size;
-//    }
-//    if(size < i) return end;
-//    Iterator jth_to_max = begin;
-//    Iterator current_max = begin;
-//    for(int j  = 0; j < i; ++j){
-//        for(Iterator k = begin; k != end; ++k){
-//            if(*k > *current_max && *current_max < *jth_to_max) current_max = k;
-//        }
-//        jth_to_max = current_max;
-//        for(Iterator l = begin; l != end; ++l){
-//            if(*l < *jth_to_max){
-//                current_max = l;
-//                break;
-//            }
-//        }
-//    }
-//    return jth_to_max;
-//}
+template<typename Iterator>
+Iterator get(Iterator begin, Iterator end, int place){
+    if(place <= 0) return end;
+    int size = 0;
+    for(Iterator m = begin; m != end; ++m){
+        ++size;
+    }
+    if(size < place) return end;
+    Iterator result = begin;
+    Iterator current_max = begin;
+    for(int j = 0; j < place; ++j){
+        for(Iterator k = begin; k != end; ++k){
+            if(*current_max < *k && *k < *result) current_max = k;
+        }
+        result = current_max;
+        for(Iterator l = begin; l != end; ++l){
+            if(*l < *result){
+                current_max = l;
+                break;
+            }
+        }
+    }
+    return result;
+}
 
 
 //----------------------------------------------part b.2:-----------------------------------------------------------
@@ -382,7 +383,6 @@ MainControl::Iterator MainControl::begin() const {
 MainControl::Iterator MainControl::end() const {
     return MainControl::Iterator(this, _number_of_participants);
 }
-
 //----------------------------------------------MainControl::Iterator class:----------------------------------------
 
 const Participant& MainControl::Iterator::operator*() const {
@@ -404,4 +404,40 @@ bool MainControl::Iterator::operator!=(const MainControl::Iterator &i) const {
 
 bool MainControl::Iterator::operator<(const MainControl::Iterator &i) const {
     return eurovision == i.eurovision && index < i.index;
+}
+
+//----------------------------------------------part b.3:-----------------------------------------------------------
+
+//----------------------------------------------MainControl class:--------------------------------------------------
+
+struct StateAndPts{
+    String state;
+    int points;
+    StateAndPts(): state(""), points(0){}
+};
+
+bool operator<(StateAndPts& participant1, StateAndPts& participant2){
+    return participant1.points < participant2.points ||
+        (participant1.points == participant2.points && participant1.state < participant2.state);
+}
+
+String MainControl::operator()(int place, VoterType type) const{
+    StateAndPts* contenders = new StateAndPts[_number_of_participants];
+    int* relevant_points = new int[_number_of_participants];
+    for(int i = 0; i < _number_of_participants; ++i){
+        switch(type){
+            case Regular:
+                relevant_points[i] = _regular_votes[i];
+            case Judge:
+                relevant_points[i] = _judge_votes[i];
+            default:
+                relevant_points[i] = _regular_votes[i] + _judge_votes[i];
+        }
+    }
+    for(int i = 0; i < _number_of_participants; ++i){
+        contenders[i].state = _participants[i]->state();
+        contenders[i].points = relevant_points[i];
+    }
+    StateAndPts* winner = get <StateAndPts*> (contenders, contenders+_number_of_participants, place);
+    return winner->state;
 }

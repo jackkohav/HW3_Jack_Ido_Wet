@@ -26,6 +26,7 @@ public:
     String& operator+=(const String& str); // s1 += s2;
     const char& operator[](int index) const; // s[5] for const s
     char& operator[](int index); // s[5] for non-const s
+
     friend std::ostream& operator<<(std::ostream&, const String&); // cout << s1;
     friend bool operator==(const String&, const String&); // s1==s2
     friend bool operator<(const String&, const String&); // s1<s2
@@ -148,6 +149,7 @@ public :
     class Iterator;
     Iterator begin() const;
     Iterator end() const;
+    String operator()(int place, VoterType type) const;
 
     friend std::ostream& operator<<(std::ostream& os, const MainControl& mainControl);
 };
