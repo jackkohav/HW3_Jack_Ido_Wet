@@ -145,8 +145,28 @@ public :
     MainControl& operator+=(Participant& p);
     MainControl& operator-=(Participant& p);
     MainControl& operator+=(const Vote& v);
+    class Iterator;
+    Iterator begin() const;
+    Iterator end() const;
 
     friend std::ostream& operator<<(std::ostream& os, const MainControl& mainControl);
+};
+
+class MainControl::Iterator{
+    const MainControl* eurovision;
+    int index;
+    Iterator(const MainControl* eurovision, int index);
+    friend class MainControl;
+
+public:
+    Iterator(const Iterator&) = default;
+    Iterator& operator=(const Iterator&) = default;
+    const Participant& operator*() const;
+    Iterator& operator++();
+    bool operator==(const Iterator& i) const;
+    bool operator!=(const Iterator& i) const;
+    bool operator<(const Iterator& i) const;
+    Iterator&operator--() = delete;
 };
 
 // -----------------------------------------------------------
