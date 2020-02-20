@@ -155,10 +155,11 @@ public :
 class MainControl::Iterator{
     const MainControl* eurovision;
     int index;
-    Iterator(const MainControl* eurovision, int index);
+    Iterator(const MainControl* eurovision, int index): eurovision(eurovision), index(index){}
     friend class MainControl;
 
 public:
+    Iterator(): eurovision(nullptr), index(0){}
     Iterator(const Iterator&) = default;
     Iterator& operator=(const Iterator&) = default;
     const Participant& operator*() const;
@@ -166,7 +167,7 @@ public:
     bool operator==(const Iterator& i) const;
     bool operator!=(const Iterator& i) const;
     bool operator<(const Iterator& i) const;
-    Iterator&operator--() = delete;
+    Iterator& operator--() = delete;
 };
 
 // -----------------------------------------------------------

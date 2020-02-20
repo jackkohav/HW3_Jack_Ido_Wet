@@ -151,7 +151,15 @@ void MainControl::setPhase(const Phase& phase) {
 MainControl& MainControl::operator+=(Participant& p) {
     if(legalParticipant(p) && _number_of_participants < _max_participants
             && _phase == Registration && !participate(p.state())) {
-        _participants[_number_of_participants++] = &p;
+        int index = 0;
+        for(; index < _number_of_participants; ++index){
+            if(p.state() > (_participants[index])->state())
+                break;
+        }
+        for(int i = index; i < ++_number_of_participants; ++i){
+            _participants[i+1] = _participants[i];
+        }
+        _participants[index] = &p;
         p.updateRegistered(true);
     }
     return *this;
@@ -217,28 +225,15 @@ std::ostream& operator<<(std::ostream& os, const MainControl& mainControl){
     if(mainControl._phase == Contest) os << "Contest";
     if(mainControl._phase == Voting) os << "Voting";
     os << std::endl;
-    String last_min;
-    String current_min;
-    int current_index = 0;
     for(int i = 0; i < mainControl._number_of_participants; ++i){
-        current_min = String("");
-        for(int j = 0; j < mainControl._number_of_participants; ++j){
-            if(mainControl._participants[j]->state() < current_min || current_min == String("")){
-                if(mainControl._participants[j]->state() > last_min){
-                    current_min = mainControl._participants[j]->state();
-                    current_index = j;
-                }
-            }
-        }
         if(mainControl._phase == Registration) {
-            os << *(mainControl._participants[current_index]) << std::endl;
+            os << *(mainControl._participants[i]) << std::endl;
         }
         else if(mainControl._phase == Voting){
-            os << mainControl._participants[current_index]->state() << " : Regular(" <<
-               mainControl._regular_votes[current_index] << ") Judge(" <<
-               mainControl._judge_votes[current_index] << ")" << std::endl;
+            os << mainControl._participants[i]->state() << " : Regular(" <<
+               mainControl._regular_votes[i] << ") Judge(" <<
+               mainControl._judge_votes[i] << ")" << std::endl;
         }
-        last_min = current_min;
     }
     os << "}" << std::endl;
     return os;
@@ -374,3 +369,39 @@ Vote::Vote(Voter& voter, const String& vote1, const String& vote2,
 //    }
 //    return jth_to_max;
 //}
+
+
+//----------------------------------------------part b.2:-----------------------------------------------------------
+
+//----------------------------------------------MainControl class:--------------------------------------------------
+
+MainControl::Iterator MainControl::begin() const {
+    return MainControl::Iterator(this, 0);
+}
+
+MainControl::Iterator MainControl::end() const {
+    return MainControl::Iterator(this, _number_of_participants);
+}
+
+//----------------------------------------------MainControl::Iterator class:----------------------------------------
+
+const Participant& MainControl::Iterator::operator*() const {
+    return *(eurovision->_participants[index]);
+}
+
+MainControl::Iterator& MainControl::Iterator::operator++() {
+    index++;
+    return *this;
+}
+
+bool MainControl::Iterator::operator==(const MainControl::Iterator &i) const {
+    return eurovision == i.eurovision && index == i.index;
+}
+
+bool MainControl::Iterator::operator!=(const MainControl::Iterator &i) const {
+    return !(*this == i);
+}
+
+bool MainControl::Iterator::operator<(const MainControl::Iterator &i) const {
+    return eurovision == i.eurovision && index < i.index;
+}
