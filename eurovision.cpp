@@ -354,14 +354,24 @@ Iterator get(Iterator begin, Iterator end, int place){
         ++size;
     }
     if(size < place) return end;
-    Iterator result = begin;
+    Iterator result;
     Iterator current_max = begin;
-    for(int j = 0; j < place; ++j){
+    for(Iterator k = begin; k != end; ++k){ // first, set result to the maximum
+        if(*current_max < *k ) current_max = k;
+    }
+    result = current_max;
+    for(Iterator l = begin; l != end; ++l){ // setting current_max to the first element that is less than result
+        if(*l < *result){
+            current_max = l;
+            break;
+        }
+    }
+    for(int j = 1; j < place; ++j){ // every iteration, result will be set to the largest element less than the previous result
         for(Iterator k = begin; k != end; ++k){
             if(*current_max < *k && *k < *result) current_max = k;
         }
         result = current_max;
-        for(Iterator l = begin; l != end; ++l){
+        for(Iterator l = begin; l != end; ++l){ // setting current_max to the first element that is less than result
             if(*l < *result){
                 current_max = l;
                 break;
@@ -370,7 +380,6 @@ Iterator get(Iterator begin, Iterator end, int place){
     }
     return result;
 }
-
 
 //----------------------------------------------part b.2:-----------------------------------------------------------
 
@@ -421,17 +430,21 @@ bool operator<(StateAndPts& participant1, StateAndPts& participant2){
         (participant1.points == participant2.points && participant1.state < participant2.state);
 }
 
-String MainControl::operator()(int place, VoterType type) const{
+String MainControl::operator()(int place, VoterType voter_type) const{
+    if(place > _number_of_participants) return "";
     StateAndPts* contenders = new StateAndPts[_number_of_participants];
     int* relevant_points = new int[_number_of_participants];
     for(int i = 0; i < _number_of_participants; ++i){
-        switch(type){
+        switch(voter_type){
             case Regular:
                 relevant_points[i] = _regular_votes[i];
+                break;
             case Judge:
                 relevant_points[i] = _judge_votes[i];
-            default:
+                break;
+            case All:
                 relevant_points[i] = _regular_votes[i] + _judge_votes[i];
+                break;
         }
     }
     for(int i = 0; i < _number_of_participants; ++i){
@@ -439,5 +452,8 @@ String MainControl::operator()(int place, VoterType type) const{
         contenders[i].points = relevant_points[i];
     }
     StateAndPts* winner = get <StateAndPts*> (contenders, contenders+_number_of_participants, place);
-    return winner->state;
+    String winner_name(winner->state);
+    delete[] relevant_points;
+    delete[] contenders;
+    return winner_name;
 }

@@ -172,6 +172,9 @@ public:
     Iterator& operator--() = delete;
 };
 
+template<typename Iterator>
+Iterator get(Iterator begin, Iterator end, int place);
+
 // -----------------------------------------------------------
 
 #endif
